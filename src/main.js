@@ -1,32 +1,105 @@
-function main() {
-  // Right side menu button injection
-  const rightSideMenu = document.getElementsByClassName(
-    "right-controls-buttons style-scope ytmusic-player-bar"
-  );
-
-  const openInYoutubeButton = document.createElement("paper-icon-button");
-  openInYoutubeButton.setAttribute("icon", "icons:exit-to-app");
-  openInYoutubeButton.setAttribute("title", "Open in YouTube");
-  openInYoutubeButton.setAttribute("aria-label", "Open in YouTube");
-  openInYoutubeButton.setAttribute("aria-disabled", "false");
-  openInYoutubeButton.className = "style-scope ytmusic-player-bar";
-
-  openInYoutubeButton.onclick = () => {
-    const state = window.store.getState();
-
-    window.open(
-      `https://www.youtube.com/watch?v=${state.player.playerResponse.videoDetails.videoId}`
-    );
-  };
-
-  if (rightSideMenu[0]) {
-    rightSideMenu[0].appendChild(openInYoutubeButton);
-  }
-}
-
 // inject javascript inside a script tag to have access to window.store
 const script = document.createElement("script");
 script.appendChild(document.createTextNode("(" + main + ")();"));
 (document.body || document.head || document.documentElement).appendChild(
   script
 );
+
+function main() {
+  function hideMenu() {
+    $("ytmusic-player-expanding-menu").style.cssText =
+      "outline: none; opacity: 0; box-sizing: border-box; max-height: 32px; max-width: 300px; display: none;";
+  }
+
+  function showMenu() {
+    $("ytmusic-player-expanding-menu").style.cssText =
+      "outline: none; opacity: 1; box-sizing: border-box; max-height: 32px; max-width: 300px; z-index: 103;";
+  }
+
+  function observe(element, mutationHandler) {
+    const mutationObserver = new MutationObserver(mutations =>
+      mutations.forEach(mutationHandler)
+    );
+
+    const handler = mutationObserver.observe(element, {
+      attributes: true,
+      attributeOldValue: true
+    });
+  }
+
+  function rightSideMenu() {
+    function injectButtonInPlayerBar(parentElement) {
+      const openInYoutubeButton = document.createElement("paper-icon-button");
+      openInYoutubeButton.setAttribute("id", "open-in-youtube-button");
+      openInYoutubeButton.setAttribute("icon", "icons:exit-to-app");
+      openInYoutubeButton.setAttribute("title", "Open in YouTube");
+      openInYoutubeButton.setAttribute("aria-label", "Open in YouTube");
+      openInYoutubeButton.setAttribute("aria-disabled", "false");
+      openInYoutubeButton.className = "style-scope ytmusic-player-bar";
+
+      openInYoutubeButton.onclick = () => {
+        const state = window.store.getState();
+
+        window.open(
+          `https://www.youtube.com/watch?v=${state.player.playerResponse.videoDetails.videoId}`
+        );
+      };
+
+      if (parentElement) {
+        parentElement.appendChild(openInYoutubeButton);
+      }
+    }
+
+    const rightSideMenu = document.getElementsByClassName(
+      "right-controls-buttons style-scope ytmusic-player-bar"
+    )[0];
+
+    const mobileExpandingMenu = document.getElementById("expanding-menu");
+
+    // we inject this one here because its removal won't be necessary
+    injectButtonInPlayerBar(mobileExpandingMenu);
+
+    // fixing width for right controls so the volume slider won't be crused when appearing in wide screen
+    document.getElementById("right-controls").style.width = "340px";
+
+    function getIsInMobileMode() {
+      return (
+        getComputedStyle(
+          document.getElementsByClassName(
+            "expand-button style-scope ytmusic-player-bar"
+          )[0]
+        ).display === "block"
+      );
+    }
+
+    let isInMobileMode = getIsInMobileMode();
+    if (!isInMobileMode) {
+      injectButtonInPlayerBar(rightSideMenu);
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      const _isInMobileMode = getIsInMobileMode();
+
+      if (_isInMobileMode !== isInMobileMode) {
+        isInMobileMode = _isInMobileMode;
+        if (_isInMobileMode) {
+          document.getElementById("open-in-youtube-button").remove();
+        } else {
+          injectButtonInPlayerBar(rightSideMenu);
+        }
+      }
+    });
+    resizeObserver.observe(document.body);
+
+    // isExpandingMenuHidden
+    let isExpandingMenuHidden = document.getElementById("expanding-menu")
+      .attributes["aria-hidden"].value;
+
+    observe(
+      document.getElementById("expanding-menu"),
+      m => (isExpandingMenuHidden = m.target.attributes["aria-hidden"].value)
+    );
+  }
+
+  rightSideMenu();
+}
