@@ -1,28 +1,44 @@
 import { observe } from "./utils";
 
-export default function rightSideMenu() {
-  function injectButtonInPlayerBar(parentElement) {
-    const openInYoutubeButton = document.createElement("paper-icon-button");
-    openInYoutubeButton.setAttribute("id", "open-in-youtube-button");
-    openInYoutubeButton.setAttribute("icon", "icons:exit-to-app");
-    openInYoutubeButton.setAttribute("title", "Open in YouTube");
-    openInYoutubeButton.setAttribute("aria-label", "Open in YouTube");
-    openInYoutubeButton.setAttribute("aria-disabled", "false");
-    openInYoutubeButton.className = "style-scope ytmusic-player-bar";
+const openInYoutubeButtonAttributes = {
+  id: "open-in-youtube-button",
+  icon: "icons:exit-to-app",
+  title: "Open in YouTube",
+  "aria-label": "Open in YouTube",
+  "aria-disabled": "false"
+};
 
-    openInYoutubeButton.onclick = () => {
-      const state = window.store.getState();
+function injectButtonInPlayerBar(parentElement, attributes) {
+  const openInYoutubeButton = document.createElement("paper-icon-button");
+  Object.entries(attributes).map(([key, value]) =>
+    openInYoutubeButton.setAttribute(key, value)
+  );
+  openInYoutubeButton.className = "style-scope ytmusic-player-bar";
 
-      window.open(
-        `https://www.youtube.com/watch?v=${state.player.playerResponse.videoDetails.videoId}`
-      );
-    };
+  openInYoutubeButton.onclick = () => {
+    const state = window.store.getState();
 
-    if (parentElement) {
-      parentElement.appendChild(openInYoutubeButton);
-    }
+    window.open(
+      `https://www.youtube.com/watch?v=${state.player.playerResponse.videoDetails.videoId}`
+    );
+  };
+
+  if (parentElement) {
+    parentElement.appendChild(openInYoutubeButton);
   }
+}
 
+function getIsInMobileMode() {
+  return (
+    getComputedStyle(
+      document.getElementsByClassName(
+        "expand-button style-scope ytmusic-player-bar"
+      )[0]
+    ).display === "block"
+  );
+}
+
+export default function rightSideMenu() {
   const rightSideMenu = document.getElementsByClassName(
     "right-controls-buttons style-scope ytmusic-player-bar"
   )[0];
@@ -30,24 +46,14 @@ export default function rightSideMenu() {
   const mobileExpandingMenu = document.getElementById("expanding-menu");
 
   // we inject this one here because its removal won't be necessary
-  injectButtonInPlayerBar(mobileExpandingMenu);
+  injectButtonInPlayerBar(mobileExpandingMenu, openInYoutubeButtonAttributes);
 
   // fixing width for right controls so the volume slider won't be crused when appearing in wide screen
   document.getElementById("right-controls").style.width = "340px";
 
-  function getIsInMobileMode() {
-    return (
-      getComputedStyle(
-        document.getElementsByClassName(
-          "expand-button style-scope ytmusic-player-bar"
-        )[0]
-      ).display === "block"
-    );
-  }
-
   let isInMobileMode = getIsInMobileMode();
   if (!isInMobileMode) {
-    injectButtonInPlayerBar(rightSideMenu);
+    injectButtonInPlayerBar(rightSideMenu, openInYoutubeButtonAttributes);
   }
 
   const resizeObserver = new ResizeObserver(() => {
@@ -58,7 +64,7 @@ export default function rightSideMenu() {
       if (_isInMobileMode) {
         document.getElementById("open-in-youtube-button").remove();
       } else {
-        injectButtonInPlayerBar(rightSideMenu);
+        injectButtonInPlayerBar(rightSideMenu, openInYoutubeButtonAttributes);
       }
     }
   });
@@ -70,6 +76,10 @@ export default function rightSideMenu() {
 
   observe(
     document.getElementById("expanding-menu"),
+    {
+      attributes: true,
+      attributeOldValue: true
+    },
     m => (isExpandingMenuHidden = m.target.attributes["aria-hidden"].value)
   );
 }

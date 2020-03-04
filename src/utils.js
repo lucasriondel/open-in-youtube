@@ -8,13 +8,19 @@ export function showMenu() {
     "outline: none; opacity: 1; box-sizing: border-box; max-height: 32px; max-width: 300px; z-index: 103;";
 }
 
-export function observe(element, mutationHandler) {
-  const mutationObserver = new MutationObserver(mutations =>
-    mutations.forEach(mutationHandler)
-  );
-
-  const handler = mutationObserver.observe(element, {
-    attributes: true,
-    attributeOldValue: true
+export function observe(element, options, mutationHandler) {
+  const mutationObserver = new MutationObserver(mutations => {
+    console.log("mutations", mutations);
+    mutations.forEach(mutationHandler);
   });
+
+  const handler = mutationObserver.observe(element, options);
+}
+
+export function createPaperIconButton(attributes) {
+  const openInYoutubeButton = document.createElement("paper-icon-button");
+  Object.entries(attributes).map(([key, value]) =>
+    openInYoutubeButton.setAttribute(key, value)
+  );
+  return openInYoutubeButton;
 }

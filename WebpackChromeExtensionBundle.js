@@ -11,7 +11,8 @@ class WebpackChromeExtensionBundle {
 
         fs.writeFileSync(
           "dist/main.js",
-          `const script = document.createElement("script");
+          `
+const script = document.createElement("script");
 script.appendChild(document.createTextNode("(" + main + ")();"));
 (document.body || document.head || document.documentElement).appendChild(
     script
