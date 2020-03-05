@@ -14,7 +14,6 @@ export function observe(
   mutationHandler: (mutation: MutationRecord) => void
 ) {
   const mutationObserver = new MutationObserver(mutations => {
-    console.log("mutations", mutations);
     mutations.forEach(mutationHandler);
   });
 
@@ -22,12 +21,12 @@ export function observe(
 }
 
 export interface IPaperIconButtonAttributes {
-  id: string;
-  icon: string;
-  title: string;
-  class: string;
-  "aria-label": string;
-  "aria-disabled": string;
+  id?: string;
+  icon?: string;
+  title?: string;
+  class?: string;
+  "aria-label"?: string;
+  "aria-disabled"?: string;
 }
 
 export function createPaperIconButton(attributes: IPaperIconButtonAttributes) {
