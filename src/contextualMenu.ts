@@ -1,12 +1,23 @@
-import { createPaperIconButton, observe } from "./utils";
+import {
+  createPaperIconButton,
+  IPaperIconButtonAttributes,
+  observe
+} from "./utils";
 
 function getVideoIdFromMenu() {
-  const navEndpoint = document.getElementById("navigation-endpoint");
-  const urlParams = new URLSearchParams("?" + navEndpoint.href.split("?")[1]);
-  return urlParams.get("v");
+  const navEndpoint = document.getElementById(
+    "navigation-endpoint"
+  ) as HTMLAnchorElement;
+  if (navEndpoint?.href) {
+    const urlParams = new URLSearchParams(
+      "?" + navEndpoint?.href.split("?")[1]
+    );
+    return urlParams.get("v");
+  }
+  return null;
 }
 
-const openInYoutubeButtonAttributes = {
+const openInYoutubeButtonAttributes: IPaperIconButtonAttributes = {
   id: "open-in-youtube-menu-item",
   icon: "icons:exit-to-app",
   title: "Open in YouTube",
@@ -15,18 +26,24 @@ const openInYoutubeButtonAttributes = {
   "aria-disabled": "false"
 };
 
-function createMenuItem(iconAttributes, itemText) {
+function createMenuItem(
+  paperIconAttributes: IPaperIconButtonAttributes,
+  itemText: string
+) {
   const div = document.createElement("div");
-  div.style =
-    "display: flex; align-items: center; height: 48px; padding: 0px 8px;";
+  div.style.display = "flex";
+  div.style.alignItems = "center";
+  div.style.height = "48px";
+  div.style.padding = "0px 8px";
+  // div.style =
+  //   "display: flex; align-items: center; height: 48px; padding: 0px 8px;";
 
-  const icon = createPaperIconButton(iconAttributes);
+  const icon = createPaperIconButton(paperIconAttributes);
   div.appendChild(icon);
 
   const text = document.createElement("span");
   text.className = "text style-scope ytmusic-menu-navigation-item-renderer";
   text.innerText = itemText;
-  text.text = itemText;
   div.appendChild(text);
 
   return div;
@@ -46,13 +63,13 @@ export default function contextualMenu() {
 
   const popupContainer = document.getElementsByTagName(
     "ytmusic-popup-container"
-  )[0];
-  const menuPopupRenderer = document.getElementsByTagName(
-    "ytmusic-menu-popup-renderer"
-  );
-  let paperListbox = null;
+  )[0] as HTMLElement;
+
+  if (!popupContainer) throw new Error(`popupContainer is undefined`);
+
+  let paperListbox: HTMLElement | null = null;
   let init = false;
-  let url = null;
+  let videoId: string | null;
 
   function injectButtonInMenu() {
     const newMenuItem = createMenuItem(
@@ -61,14 +78,16 @@ export default function contextualMenu() {
     );
 
     newMenuItem.onclick = () =>
-      window.open(`https://www.youtube.com/watch?v=${getVideoIdFromMenu()}`);
+      window.open(`https://www.youtube.com/watch?v=${videoId}`);
 
-    paperListbox.appendChild(newMenuItem);
+    paperListbox!.appendChild(newMenuItem);
   }
 
   observe(popupContainer, { childList: true }, m => {
     if (!init) {
       paperListbox = document.getElementById("items");
+
+      if (!paperListbox) throw new Error(`paperListbox is undefined`);
 
       observe(
         paperListbox,
@@ -76,16 +95,13 @@ export default function contextualMenu() {
           childList: true
         },
         m => {
-          let currentHrefValue = document.getElementById("navigation-endpoint")
-            .href;
-          if (currentHrefValue !== url) {
-            if (!url) {
-              injectButtonInMenu();
-            }
-            url = currentHrefValue;
-            console.log("url", url);
+          let currentVideoId = getVideoIdFromMenu();
+
+          if (currentVideoId !== videoId) {
+            injectButtonInMenu();
+            videoId = currentVideoId;
+            console.log("videoId", videoId);
           }
-          // console.dir(m);
         }
       );
 
