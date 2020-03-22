@@ -5,7 +5,10 @@ const path = require("path");
 module.exports = {
   entry: path.resolve(__dirname, "./src/index.ts"),
   plugins: [
-    new CopyPlugin([{ from: "src/manifest.json", to: "" }]),
+    new CopyPlugin([
+      { from: "src/manifest.json", to: "" },
+      { from: "src/style.css", to: "" }
+    ]),
     new WebpackChromeExtensionBundle()
   ],
   resolve: {

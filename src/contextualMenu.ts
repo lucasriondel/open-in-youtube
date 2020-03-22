@@ -201,36 +201,6 @@ export default function contextualMenu() {
         }
       );
 
-      // observe(
-      //   paperListbox,
-      //   {
-      //     childList: true
-      //   },
-      //   m => {
-      //     let currentVideoId = getVideoIdFromMenu();
-
-      //     if (currentVideoId !== videoId) {
-      //       injectButtonInMenu(
-      //         openInYoutubeButtonAttributes,
-      //         "Open in YouTube",
-      //         () => window.open(`https://www.youtube.com/watch?v=${videoId}`)
-      //       );
-      //       injectButtonInMenu(
-      //         copyURLToClipboardButtonAttributes,
-      //         "Copy URL to clipboard",
-      //         () => {
-      //           navigator.clipboard.writeText(
-      //             `https://www.youtube.com/watch?v=${videoId}`
-      //           );
-      //           hideMenu();
-      //         }
-      //       );
-      //       videoId = currentVideoId;
-      //       console.log("videoId", videoId);
-      //     }
-      //   }
-      // );
-
       init = true;
     }
   });
