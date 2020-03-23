@@ -7,8 +7,8 @@
 
   "content_scripts": [
     {
-      "css": ["src/styles.css"],
-      "js": ["src/main.js"],
+      "js": ["main.js"],
+      "css": ["style.css"],
       "matches": ["https://music.youtube.com/*"]
     }
   ]
