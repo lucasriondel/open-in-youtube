@@ -21,6 +21,7 @@ function getMetadataFromMenu() {
       "navigation-endpoint"
     ) as HTMLAnchorElement;
 
+    // TODO add debug
     console.groupCollapsed("contextualMenu:getMetadataFromMenu");
     console.log("navEndpoint", navEndpoint);
     console.groupEnd();
