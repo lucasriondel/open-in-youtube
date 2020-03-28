@@ -1,9 +1,9 @@
 {
   "main": "src/index.ts",
   "scripts": {
-    "build": "webpack --config webpack.prod.js && yarn resize-logo",
-    "dev": "webpack --config webpack.dev.js",
-    "resize-logo": "sharp -i \"src/img/logo.png\" -o \"dist/logo128.png\" resize 128 128 && sharp -i \"src/img/logo.png\" -o \"dist/logo48.png\" resize 48 48 && sharp -i \"src/img/logo.png\" -o \"dist/logo16.png\" resize 16 16",
+    "build": "webpack --config webpack/webpack.prod.js && yarn resize-logo",
+    "dev": "webpack --config webpack/webpack.dev.js",
+    "resize-logo": "sharp -i \"extension/img/logo.png\" -o \"dist/logo128.png\" resize 128 128 && sharp -i \"extension/img/logo.png\" -o \"dist/logo48.png\" resize 48 48 && sharp -i \"extension/img/logo.png\" -o \"dist/logo16.png\" resize 16 16",
     "lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {

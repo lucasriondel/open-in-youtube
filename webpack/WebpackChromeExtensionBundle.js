@@ -1,16 +1,16 @@
-const fs = require("fs");
+const fs = require('fs');
 
 class WebpackChromeExtensionBundle {
   // Define `apply` as its prototype method which is supplied with compiler as its argument
   apply(compiler) {
     // Specify the event hook to attach to
     compiler.hooks.done.tapAsync(
-      "WebpackChromeExtensionBundle",
+      'WebpackChromeExtensionBundle',
       (compilation, callback) => {
-        const file = fs.readFileSync("./dist/main.js", { encoding: "utf8" });
+        const file = fs.readFileSync('./dist/main.js', { encoding: 'utf8' });
 
         fs.writeFileSync(
-          "dist/main.js",
+          'dist/main.js',
           `
 const script = document.createElement("script");
 script.appendChild(document.createTextNode("(" + main + ")();"));
@@ -22,7 +22,7 @@ function main() {
 ${file}
 }`
         );
-        console.log("Wrapped bundle inside a script tag injection.");
+        console.log('Wrapped bundle inside a script tag injection.');
         callback();
       }
     );
