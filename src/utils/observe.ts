@@ -3,7 +3,7 @@ export default function observe(
   options: MutationObserverInit,
   mutationHandler: (mutation: MutationRecord) => void
 ) {
-  const mutationObserver = new MutationObserver(mutations => {
+  const mutationObserver = new MutationObserver((mutations) => {
     mutations.forEach(mutationHandler);
   });
 

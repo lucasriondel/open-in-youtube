@@ -1,4 +1,4 @@
-const youtubeUrl = "https://www.youtube.com";
+const youtubeUrl = 'https://www.youtube.com';
 
 export function youtubeVideoUrl(videoId: string) {
   return `${youtubeUrl}/watch?v=${videoId}`;
