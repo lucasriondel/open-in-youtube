@@ -1,5 +1,5 @@
-import { getDirectChildrens } from "./htmlElementsCollections";
-import { parseQuerystring, sanitizeQuerystring } from "./querystring";
+import { getDirectChildrens } from './htmlElementsCollections';
+import { parseQuerystring, sanitizeQuerystring } from './querystring';
 
 function logGroupCollapsed(title: string, content: () => void) {
   console.groupCollapsed(title);
@@ -9,31 +9,31 @@ function logGroupCollapsed(title: string, content: () => void) {
 
 // Debugging purpose only
 export function logPopupContainerContent() {
-  logGroupCollapsed("popupContainerContent", () => {
+  logGroupCollapsed('popupContainerContent', () => {
     const ironDropdown = document.getElementsByTagName(
-      "iron-dropdown"
+      'iron-dropdown'
     )[0] as HTMLElement;
 
-    console.log("ironDropdown", ironDropdown);
+    console.log('ironDropdown', ironDropdown);
 
     const menuNavigationItems = document.getElementsByTagName(
-      "ytmusic-menu-navigation-item-renderer"
+      'ytmusic-menu-navigation-item-renderer'
     );
 
     logGroupCollapsed(
       `menuNavigationItems (${menuNavigationItems.length})`,
       () => {
-        console.log("menuNavigationItems", menuNavigationItems);
+        console.log('menuNavigationItems', menuNavigationItems);
 
-        logGroupCollapsed("childrens", () => {
+        logGroupCollapsed('childrens', () => {
           Array.from(menuNavigationItems).map((element, i) => {
             console.log(`item ${i} children`, element.children);
           });
 
-          getDirectChildrens(menuNavigationItems).map((children, i) => {
+          getDirectChildrens(menuNavigationItems).map((children) => {
             if (children instanceof HTMLAnchorElement) {
               console.log(
-                "HTMLAnchorElement",
+                'HTMLAnchorElement',
                 children,
                 children.href,
                 children.search
@@ -44,28 +44,28 @@ export function logPopupContainerContent() {
       }
     );
 
-    logGroupCollapsed("a", () => {
-      getDirectChildrens(menuNavigationItems).map((children, i) => {
+    logGroupCollapsed('a', () => {
+      getDirectChildrens(menuNavigationItems).map((children) => {
         if (children instanceof HTMLAnchorElement && children.search) {
           console.groupCollapsed(
-            "HTMLAnchorElement",
+            'HTMLAnchorElement',
             sanitizeQuerystring(children.search)
           );
-          console.log("url", parseQuerystring(children.search));
-          console.log("children.href", children.href);
-          console.log("children.search", children.search);
-          console.log("children", children);
+          console.log('url', parseQuerystring(children.search));
+          console.log('children.href', children.href);
+          console.log('children.search', children.search);
+          console.log('children', children);
           console.groupEnd();
         }
       });
     });
 
     const menuServiceItems = document.getElementsByTagName(
-      "ytmusic-menu-service-item-renderer"
+      'ytmusic-menu-service-item-renderer'
     );
 
     logGroupCollapsed(`menuServiceItems (${menuServiceItems.length})`, () => {
-      console.log("menuServiceItems", menuServiceItems);
+      console.log('menuServiceItems', menuServiceItems);
       Array.from(menuServiceItems).map((element, i) => {
         console.log(`item ${i} children`, element.children);
       });
